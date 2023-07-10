@@ -4,6 +4,7 @@
 # rpatel7@madisoncollege.edu
 # Apache log analyzer project MILESTONE 1; create var and print it, take an input and store it.
 
+#take command line argument input
 import getopt, sys
 if len(sys.argv) > 1:
     input = sys.argv[1]
@@ -17,25 +18,22 @@ if not input.lower() in vaild_input:
     print("you choose not to continue")
     exit(0)
 
-#Apache log analyzer project MILESTONE 2 and 3
-
 #read apache log entries
 with open("m5-access.log", "r") as log_file:
     log_entries = log_file.readlines()
 
+#create file and assign var to it
 hFile = open("apache_analysis.txt", "w")
 
 #split entries from log file 
 for entries in log_entries:
-    #print(x)
-    #assign apache log entry
-
     #remove all double quotes from string
     log_file = entries.replace('"', '')
 
     #split and print HTTP status code and IP address
     log_split = log_file.split(" ")
 
+    #checks for HTTPS code over 400 and prints them
     if int(log_split[8]) >= 400:
         #print IP and HTTPS status code
         print(f"", log_split[0], "-", log_split[8])
@@ -43,6 +41,7 @@ for entries in log_entries:
         #assign IP and HTTPS status code to log_line
         log_line = (f"", log_split[0], "-", log_split[8])
 
+        #checks for HTTPS code over 500 and prints them
         if int(log_split[8]) >= 500: 
             #convert tuple to str
             log_line = ''.join(log_line)
@@ -50,5 +49,3 @@ for entries in log_entries:
             #write into file and add new line
             hFile.write(log_line)
             hFile.write("\n")
-
-
