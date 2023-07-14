@@ -25,6 +25,9 @@ with open("m5-access.log", "r") as log_file:
 #create file and assign var to it
 hFile = open("apache_analysis.txt", "w")
 
+#create an empty dictionary to store summary information about our apache log file 
+apache_log_summary = {}
+
 #split entries from log file 
 for entries in log_entries:
     #remove all double quotes from string
@@ -41,11 +44,22 @@ for entries in log_entries:
         #assign IP and HTTPS status code to log_line
         log_line = (f"", log_split[0], "-", log_split[8])
 
-        #checks for HTTPS code over 500 and prints them
-        if int(log_split[8]) >= 500: 
-            #convert tuple to str
-            log_line = ''.join(log_line)
+    #checks for HTTPS code over 500 and prints them
+    # if int(log_split[8]) >= 500: 
+    #     #convert tuple to str
+    #     log_line = ''.join(log_line)
 
-            #write into file and add new line
-            hFile.write(log_line)
-            hFile.write("\n")
+    #     #write into file and add new line
+    #     hFile.write(log_line)
+    #     hFile.write("\n")
+
+    if log_split[0] in apache_log_summary:
+        apache_log_summary[log_split[0]] += 1
+    else:
+        apache_log_summary[log_split[0]] = 1
+
+print(apache_log_summary)
+for ip in apache_log_summary:
+    if apache_log_summary[ip] >= 5:
+        summary = f"{log_split[0]} has {apache_log_summary[ip]}"
+        hFile.write(summary + "\n")
