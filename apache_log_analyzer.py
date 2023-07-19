@@ -3,22 +3,21 @@
 # Ricky Patel
 # rpatel7@madisoncollege.edu
 # Apache log analyzer project MILESTONE 1; create var and print it, take an input and store it.
-def ParseLogEntry(apache_log_entry):
-#split entries from log file 
-    #remove all double quotes from string
-    log_file = entries.replace('"', '')
 
-    #split and print HTTP status code and IP address
+def ParseLogEntry(apache_log_entry):
+    #remove all double quotes from string
+    log_file = apache_log_entry.replace('"', '')
+
+    #split the file
     log_split = log_file.split(" ")
-    return(log_split)
+    return(log_split[0], log_split[8])
 
 def main():
-    #take command line argument input
     import getopt, sys
     if len(sys.argv) > 1:
         user_input = sys.argv[1]
     else:
-        print("Apache log analyzer; would you like to continue?/n")
+        print("Apache log analyzer; would you like to continue?\n")
         user_input = input("y, yes, or yeah for yes, any other input with be a no\n")
 
     #input taken and evaluted
@@ -37,22 +36,25 @@ def main():
     #create an empty dictionary to store summary information about our apache log file 
     apache_log_summary = {}
 
-    log_split = ParseLogEntry(log_entries)
+    #split entries from log file 
+    for apache_log_entry in log_entries:
+        
+        log_split = ParseLogEntry(apache_log_entry)
 
-    #checks for HTTPS code over 400 and prints them
-    if int(log_split[8]) >= 400:
-        #print IP and HTTPS status code
-        print(f"", log_split[0], "-", log_split[8])
+        #checks for HTTPS code over 400 and prints them
+        if int(log_split[1]) >= 400:
+            #print IP and HTTPS status code
+            print(f"", log_split[0], "-", log_split[1])
 
-        #assign IP and HTTPS status code to log_line
-        #log_line = (f"", log_split[0], "-", log_split[8])
+            #assign IP and HTTPS status code to log_line
+            log_line = (f"", log_split[0], "-", log_split[1])
 
-    if log_split[0] in apache_log_summary:
-        apache_log_summary[log_split[0]] += 1
-    else:
-        apache_log_summary[log_split[0]] = 1
+        if log_split[0] in apache_log_summary:
+            apache_log_summary[log_split[0]] += 1
+        else:
+            apache_log_summary[log_split[0]] = 1
 
-    for ip in apache_log_summary:
+    for ip in apache_log_summary.keys():
         if apache_log_summary[ip] >= 5:
             summary = f"{log_split[0]} has {apache_log_summary[ip]}"
             hFile.write(summary + "\n")
