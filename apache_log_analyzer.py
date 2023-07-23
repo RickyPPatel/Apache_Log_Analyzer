@@ -4,6 +4,15 @@
 # rpatel7@madisoncollege.edu
 # Apache log analyzer project MILESTONE 1; create var and print it, take an input and store it.
 
+import getopt, sys, subprocess
+
+#processes an Apache log file using shell commands, counts the occurrences of each IP address, and returns 5 IP addresses with the highest occurrence counts.
+def IPAddressCount(apache_log_file_name):
+    command = f"cat {apache_log_file_name} | cut -d ' ' -f1 | sort -n | uniq -c | sort -n | tail -n5"
+    result = subprocess.run(command, stdout=subprocess.PIPE, shell=True)
+    return result.stdout.decode()
+
+#splits the entries in the files
 def ParseLogEntry(apache_log_entry):
     #remove all double quotes from string
     log_file = apache_log_entry.replace('"', '')
@@ -12,8 +21,9 @@ def ParseLogEntry(apache_log_entry):
     log_split = log_file.split(" ")
     return(log_split[0], log_split[8])
 
+#main function
 def main():
-    import getopt, sys
+    
     if len(sys.argv) > 1:
         user_input = sys.argv[1]
     else:
@@ -26,38 +36,14 @@ def main():
         print("you choose not to continue")
         exit(0)
 
-    #read apache log entries
-    with open("m5-access.log", "r") as log_file:
-        log_entries = log_file.readlines()
+    results = IPAddressCount("m5-access.log")
 
-    #create file and assign var to it
-    hFile = open("apache_analysis.txt", "w")
+    apache_log_analysis = open("apache_analysis.txt", "w")
 
-    #create an empty dictionary to store summary information about our apache log file 
-    apache_log_summary = {}
+    apache_log_analysis.write(results)
+    print(results)
 
-    #split entries from log file 
-    for apache_log_entry in log_entries:
-        
-        log_split = ParseLogEntry(apache_log_entry)
-
-        #checks for HTTPS code over 400 and prints them
-        if int(log_split[1]) >= 400:
-            #print IP and HTTPS status code
-            print(f"", log_split[0], "-", log_split[1])
-
-            #assign IP and HTTPS status code to log_line
-            log_line = (f"", log_split[0], "-", log_split[1])
-
-        if log_split[0] in apache_log_summary:
-            apache_log_summary[log_split[0]] += 1
-        else:
-            apache_log_summary[log_split[0]] = 1
-
-    for ip in apache_log_summary.keys():
-        if apache_log_summary[ip] >= 5:
-            summary = f"{log_split[0]} has {apache_log_summary[ip]}"
-            hFile.write(summary + "\n")
+    apache_log_analysis.close
             
 if __name__ == "__main__":
     main()
