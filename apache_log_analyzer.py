@@ -35,6 +35,11 @@ def main():
     if not user_input.lower() in vaild_input:
         print("you choose not to continue")
         exit(0)
+    #input taken and evaluted
+    vaild_input = ["y", "yes", "yeah"]
+    if not user_input.lower() in vaild_input:
+        print("you choose not to continue")
+        exit(0)
 
     results = IPAddressCount("m5-access.log")
 
