@@ -31,13 +31,13 @@ def ParseLogEntry(apache_log_entry):
 def main():
 
     #create argumnet for input for file name
-    #parser = argparse.ArgumentParser(description = "Parser")
+    parser = argparse.ArgumentParser(description = "Parser")
 
     #argument for file name
-    #parser.add_argument("-f", "--filenmae", dest = "filename", required = True, type = str, help = "Enter File Name")
+    parser.add_argument("-f", "--filenmae", dest = "filename", required = True, type = str, help = "Enter File Name")
 
     #getting arguments user entered
-    #args = parser.parse_args()
+    args = parser.parse_args()
 
     #results = IPAddressCount(args.filename)
     results = IPAddressCount("m5-access.log")
